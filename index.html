@@ -65,9 +65,9 @@ p {
   padding: 10px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   line-height: 18px;
-  height: 180px;
+  height: 150px;
   margin-bottom: 40px;
-  width: 200px;
+  width: 160px;
 }
 
 .legend-key {
@@ -79,40 +79,40 @@ p {
 }
 
 #area {
-   height: 20px;
-   width: 20px;
-   background-color: #ffa733;
+   height: 15px;
+   width: 30px;
+   background-color: #ffc375;
    border-radius: 0%;
    opacity: 0.6;
 }
 
 #vhigh {
-   height: 20px;
-   width: 20px;
+   height: 15px;
+   width: 30px;
    background-color: #ff5757;
    border-radius: 0%;
    opacity: 0.6;
 }
 
 #mod {
-   height: 20px;
-   width: 20px;
-   background-color: #ff8f33;
+  height: 15px;
+  width: 30px;
+   background-color: #f9943b;
    border-radius: 0%;
    opacity: 0.6;
 }
 
 #low {
-   height: 20px;
-   width: 20px;
+  height: 15px;
+  width: 30px;
    background-color: #fcef3b;
    border-radius: 0%;
    opacity: 0.6;
 }
 
 #vlow {
-   height: 20px;
-   width: 20px;
+  height: 15px;
+  width: 30px;
    background-color: #65ff57;
    border-radius: 0%;
    opacity: 0.6;
@@ -120,12 +120,12 @@ p {
 
 .left {
   float: left;
-  width: 50%;
+  width: 30%;
 }
 
 .right{
   float: right;
-  width: 50%;
+  width: 70%;
   z-index: 1;
 }
 
@@ -190,24 +190,25 @@ p {
     <!-- <h2>Legend</h2> -->
     <div class="left">
         <p id="area"></p>
-        <br>
-        <br>
+
         <p id ="vhigh"></p>
+
         <p id ="mod"></p>
-        <br>
+
         <p id ="low"></p>
-        <br>
+
         <p id ="vlow"></p>
     </div>
     <div class="right">
-        <p>Seismic Hazard Zones</p>
-        <p>Very High Liquefaction</p>
+        <p>Hazard Zones</p>
 
-        <p>Moderate Liquefaction</p>
+        <p>Very High LP</p>
 
-        <p>Low Liquefaction</p>
+        <p>Moderate LP</p>
 
-        <p>Very Low Liquefaction</p>
+        <p>Low LP</p>
+
+        <p>Very Low LP</p>
     </div>
 </div>
 
@@ -222,7 +223,7 @@ var bounds = [
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2FybG9pZ2FydGEiLCJhIjoiY2pmbGlmb3o5MGh5ZDJxazJwNG5yamdmeCJ9.8AXiwceXO6nPnZkpDNPpKg';
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/karloigarta/cjvh90qwe08ky1csca2nx3qz4',
+  style: 'mapbox://styles/karloigarta/cjvi9ibxv042n1csa2bip2udk',
   center: [-122.396287, 37.790531],
   zoom: 13.7,
   pitch: 45,
@@ -286,7 +287,7 @@ map.on('load', function () {
 
 });
 
-var toggleableLayerIds = ['Very High Liquefaction', 'Moderate Liquefaction', 'Low Liquefaction', 'Very Low Liquefaction' ];
+var toggleableLayerIds = ['Very High LP', 'Moderate LP', 'Low LP', 'Very Low LP' ];
 
 for (var i = 0; i < toggleableLayerIds.length; i++) {
 var id = toggleableLayerIds[i];
