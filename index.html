@@ -58,7 +58,7 @@ p {
   height: 100px;
   margin-top: 10px;
   margin-right: 60px;
-  width: 250px;
+  width: 500px;
 }
 
 #legend {
@@ -81,7 +81,39 @@ p {
 #area {
    height: 20px;
    width: 20px;
-   background-color: #ea8948;
+   background-color: #ffa733;
+   border-radius: 0%;
+   opacity: 0.6;
+}
+
+#vhigh {
+   height: 20px;
+   width: 20px;
+   background-color: #ff5757;
+   border-radius: 0%;
+   opacity: 0.6;
+}
+
+#mod {
+   height: 20px;
+   width: 20px;
+   background-color: #ff8f33;
+   border-radius: 0%;
+   opacity: 0.6;
+}
+
+#low {
+   height: 20px;
+   width: 20px;
+   background-color: #fcef3b;
+   border-radius: 0%;
+   opacity: 0.6;
+}
+
+#vlow {
+   height: 20px;
+   width: 20px;
+   background-color: #65ff57;
    border-radius: 0%;
    opacity: 0.6;
 }
@@ -97,37 +129,105 @@ p {
   z-index: 1;
 }
 
+ /* toggle layers */
+
+ #menu {
+ background: #f8f8f8;
+ position: absolute;
+ z-index: 1;
+ top: 10px;
+ left: 10px;
+ border-radius: 3px;
+ width: 120px;
+ border: 1px solid rgba(0,0,0,0.4);
+ font-family: 'Open Sans', sans-serif;
+ }
+
+ #menu a {
+ font-size: 13px;
+ color: #cfd1cf;
+ display: block;
+ margin: 0;
+ padding: 0;
+ padding: 10px;
+ text-decoration: none;
+ border-bottom: 1px solid rgba(0,0,0,0.25);
+ text-align: center;
+ }
+
+ #menu a:last-child {
+ border: none;
+ }
+
+ #menu a:hover {
+ background-color: #f8f8f8;
+ color: #404040;
+ }
+
+ #menu a.active {
+ background-color: #f8f8f8);
+ color: #000000;
+ }
+
+ #menu a.active:hover {
+ background: #cfd1cf;
+ }
+ /* toggle layers ends */
+
   </style>
+
 </head>
 <body>
 
+<!--whats this  -->
+<nav id="menu"></nav>
+<!--whats this  -->
 <div id='map'></div>
 
-<div class='map-overlay' id='features'><h2>Earthquake Vulnerable Skycrapers</h2><div id='pd'><p>Hover over an icon!</p></div></div>
+<div class='map-overlay' id='features'><h2>San Francisco High Rises & Seismic Hazard Zones</h2><div id='pd'><p>Hover over the base of a building!</p></div></div>
 
 <div class='map-overlay' id='legend'>
-    <h2>Legend</h2>
+    <!-- <h2>Legend</h2> -->
     <div class="left">
         <p id="area"></p>
         <br>
         <br>
-        <p><img src="city-15.svg" alt=""></p>
+        <p id ="vhigh"></p>
+        <p id ="mod"></p>
+        <br>
+        <p id ="low"></p>
+        <br>
+        <p id ="vlow"></p>
     </div>
     <div class="right">
         <p>Seismic Hazard Zones</p>
-        <p>Earthquake Vulnerable Skyscrapers</p>
+        <p>Very High Liquefaction</p>
+
+        <p>Moderate Liquefaction</p>
+
+        <p>Low Liquefaction</p>
+
+        <p>Very Low Liquefaction</p>
     </div>
 </div>
 
+
 <script>
+
+var bounds = [
+[-122.604280 ,37.673843], // Southwest coordinates
+[-122.226682 ,37.869622]  // Northeast coordinates
+];
+
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2FybG9pZ2FydGEiLCJhIjoiY2pmbGlmb3o5MGh5ZDJxazJwNG5yamdmeCJ9.8AXiwceXO6nPnZkpDNPpKg';
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/karloigarta/cjuiuoil70e8d1frui6fz70e3',
+  style: 'mapbox://styles/karloigarta/cjvh90qwe08ky1csca2nx3qz4',
   center: [-122.396287, 37.790531],
-  zoom: 16.1,
+  zoom: 13.7,
   pitch: 45,
-  bearing: -17.6
+  bearing: -17.6,
+  maxBounds: bounds
   });
 
 map.on('load', function() {
@@ -137,51 +237,86 @@ map.on('load', function() {
   });
 
   if (building.length > 0) {
-    document.getElementById('pd').innerHTML = '<h3><strong>' + building[0].properties.Title + '</strong></h3>'
+    document.getElementById('pd').innerHTML = '<h3><strong>' + building[0].properties.address + ', ' + building[0].properties.name +'</strong></h3>'
   } else {
-    document.getElementById('pd').innerHTML = '<p>Hover over an icon!</p>';
+    document.getElementById('pd').innerHTML = '<p>Hover over the base of a building!</p>';
   }
 });
 });
 
-map.on('load', function() {
-// Insert the layer beneath any symbol layer.
-var layers = map.getStyle().layers;
+/* Toggle Layers - starts here */
 
-var labelLayerId;
-for (var i = 0; i < layers.length; i++) {
-if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
-labelLayerId = layers[i].id;
-break;
-}
-}
+map.on('load', function () {
 
-map.addLayer({
-'id': '3d-buildings',
-'source': 'composite',
-'source-layer': 'building',
-'filter': ['==', 'extrude', 'true'],
-'type': 'fill-extrusion',
-'minzoom': 15,
-'paint': {
-'fill-extrusion-color': '#aaa',
+// map.addSource('Very High Liquefaction', {
+// type: 'vector',
+// url: 'mapbox://karloigarta.79q0okpk'
+// });
+// map.addLayer({
+// 'id': 'Very High Liquefaction',
+// 'type': 'fill-extrusion',
+// 'source': 'Very High Liquefaction',
+// 'layout': {
+// 'visibility': 'visible'
+// },
+// // 'paint': {
+// // 'circle-radius': 8,
+// // 'circle-color': 'rgba(55,148,179,1)'
+// // },
+// 'source-layer': 'Tall_Building_Inventory-07j41k'
+// });
 
-// use an 'interpolate' expression to add a smooth transition effect to the
-// buildings as the user zooms in
-'fill-extrusion-height': [
-"interpolate", ["linear"], ["zoom"],
-15, 0,
-15.05, ["get", "height"]
-],
-'fill-extrusion-base': [
-"interpolate", ["linear"], ["zoom"],
-15, 0,
-15.05, ["get", "min_height"]
-],
-'fill-extrusion-opacity': .6
-}
-}, labelLayerId);
+// map.addSource('Moderate Liquefaction', {
+// type: 'vector',
+// url: 'mapbox://karloigarta.79q0okpk'
+// });
+// map.addLayer({
+// 'id': 'Moderate Liquefaction',
+// 'type': 'fill-extrusion',
+// 'source': 'Moderate Liquefaction',
+// 'layout': {
+// 'visibility': 'visible'
+// },
+// // 'paint': {
+// // 'circle-radius': 8,
+// // 'circle-color': 'rgba(55,148,179,1)'
+// // },
+// 'source-layer': 'Tall_Building_Inventory-07j41k'
+// });
+
 });
+
+var toggleableLayerIds = ['Very High Liquefaction', 'Moderate Liquefaction', 'Low Liquefaction', 'Very Low Liquefaction' ];
+
+for (var i = 0; i < toggleableLayerIds.length; i++) {
+var id = toggleableLayerIds[i];
+
+var link = document.createElement('a');
+link.href = '#';
+link.className = 'active';
+link.textContent = id;
+
+link.onclick = function (e) {
+var clickedLayer = this.textContent;
+e.preventDefault();
+e.stopPropagation();
+
+var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+if (visibility === 'visible') {
+map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+this.className = '';
+} else {
+this.className = 'active';
+map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+}
+};
+
+var layers = document.getElementById('menu');
+layers.appendChild(link);
+}
+
+// toggle layers ends here
 
 map.addControl(new mapboxgl.NavigationControl());
 
